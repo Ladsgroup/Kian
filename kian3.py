@@ -22,7 +22,7 @@ else:
     y_k = len(training_set[0][-1])
 arch = [len(training_set[0]), y_k]
 arch2 = [len(training_set[0]), len(training_set[0])]
-print "Working on a training setas bug as %d" % len(training_set)
+print "Working on a training set size of %d" % len(training_set)
 
 
 def forward(a, theta):
@@ -61,7 +61,7 @@ def kian(theta, case):
 m = len(training_set)
 
 
-def cost_function(theta, training_set):
+def cost_function(theta, training_set, reg=True):
     sum_cos = 0
     for case in training_set:
         y = kian(theta, case[:-1])
@@ -71,11 +71,12 @@ def cost_function(theta, training_set):
             sum_cos -= case[-1][i]*math.log(y[i]) + \
                 (1-case[-1][i])*math.log(1-y[i])
     sum_cos = sum_cos/m
-    for i in range(2):
-        for j in range(len(theta[i])):
-            for k in range(len(theta[i][j])):
-                if not k or not j:
-                    sum_cos += (lambda_para*theta[i][j][k]*theta[i][j][k])/(2*m)  # noqa
+    if reg:
+        for i in range(2):
+            for j in range(len(theta[i])):
+                for k in range(len(theta[i][j])):
+                    if not k or not j:
+                        sum_cos += (lambda_para*theta[i][j][k]*theta[i][j][k])/(2*m)  # noqa
     return sum_cos
 theta = [[]]*2
 for i in range(2):
