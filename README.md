@@ -11,7 +11,7 @@ How to run this code for a run on classifying humans:
 2. Run these commands:
 
 ```
-   sql dewiki <kian.sql> en_kian1.txt
+   sql dewiki <kian.sql> en_kian.txt
    sql dewiki <kian2.sql> en_kian2.txt
    sql dewiki <kian3.sql> en_kian4.txt  #Historical reasons
    python kian1.py
