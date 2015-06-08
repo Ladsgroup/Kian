@@ -18,7 +18,9 @@ li = set()
 
 
 def check(name, list_of_ctas):
-    set_of = [0, 0, 0, 0, 0, 0]
+    words = [u'fictional', u'duos', 'trios', 'bands',
+             'deities', 'men', 'women', 'people', 'births', 'deaths']
+    set_of = ([0] * 11) + ([0] * len(words)) + [0]
     if name in n_humans:
         pass
     else:
@@ -27,18 +29,35 @@ def check(name, list_of_ctas):
         else:
             return
     for cat in list_of_ctas:
+        n_cat = '_' + cat.lower().replace('category:', '') + '_'
         if cat in cats:
             a = cats[cat][2]
             if not a:
-                set_of[-2] += 1
-            elif a < 20.0:
-                set_of[-3] += 1
+                set_of[0] += 1
+            elif a <= 10.0:
+                set_of[1] += 1
+            elif a <= 20.0:
+                set_of[2] += 1
+            elif a <= 30.0:
+                set_of[3] += 1
+            elif a <= 40.0:
+                set_of[4] += 1
             elif a <= 50.0:
-                set_of[-4] += 1
+                set_of[5] += 1
+            elif a <= 60.0:
+                set_of[6] += 1
+            elif a <= 70.0:
+                set_of[7] += 1
             elif a <= 80.0:
-                set_of[-5] += 1
+                set_of[8] += 1
+            elif a <= 90.0:
+                set_of[9] += 1
             else:
-                set_of[-6] += 1
+                set_of[10] += 1
+            for i, word in enumerate(words):
+                if u'_%s_' % word in n_cat:
+                    set_of[11 + i] += 1
+
     if not tuple(set_of) in li:
         li.add(tuple(set_of))
         f = codecs.open('%scats2.txt' % base_dir, 'a', 'utf-8')

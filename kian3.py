@@ -1,8 +1,8 @@
 import math
 import random
 import codecs
-#import scipy, numpy
-#I used to use BFGS method but I really don't want dependencies.
+# import scipy, numpy
+# I used to use BFGS method but I really don't want dependencies.
 no_iter = 500
 J_history = []
 delta = []
@@ -21,7 +21,7 @@ else:
 arch = [len(training_set[0]), y_k]
 arch2 = [len(training_set[0]), len(training_set[0])]
 print "Working on a training set size of %d" % len(training_set)
-cv_set = random.sample(training_set, len(training_set)/5)
+cv_set = random.sample(training_set, len(training_set) / 5)
 training_set2 = [x for x in training_set if x not in cv_set]
 training_set = training_set2[:]
 
@@ -31,7 +31,7 @@ def forward(a, theta):
     for i in range(len(theta)):
         sum_i_2 = 0
         for j in range(len(a)):
-            sum_i_2 += a[j]*theta[i][j]
+            sum_i_2 += a[j] * theta[i][j]
         sum_i.append(sum_i_2)
     return sum_i
 
@@ -41,18 +41,18 @@ def backward(delta, theta, a):
     for i in range(len(theta[0])):
         sum_i = 0.0
         for j in range(len(theta)):
-            sum_i += theta[j][i]*delta[j]*a[i]*(1-a[i])
+            sum_i += theta[j][i] * delta[j] * a[i] * (1 - a[i])
         res.append(sum_i)
     return res
 
 
 def sigmoid(a):
-    return 1.0/(1 + math.exp(-1*a))
+    return 1.0 / (1 + math.exp(-1 * a))
 
 
 def kian(theta, case):
-    z = [[]]*3
-    a = [[]]*3
+    z = [[]] * 3
+    a = [[]] * 3
     a[0] = [1] + case
     z[1] = forward(a[0], theta[0])
     a[1] = [1] + [sigmoid(i) for i in z[1]][1:]
@@ -70,15 +70,15 @@ def cost_function(theta, training_set, reg=True, lambda_para=1):
         if isinstance(case[-1], int):
             case[-1] = [case[-1]]
         for i in range(len(y)):
-            sum_cos -= case[-1][i]*math.log(y[i]) + \
-                (1-case[-1][i])*math.log(1-y[i])
-    sum_cos = sum_cos/m
+            sum_cos -= case[-1][i] * math.log(y[i]) + \
+                (1 - case[-1][i]) * math.log(1 - y[i])
+    sum_cos = sum_cos / m
     if reg:
         for i in range(2):
             for j in range(len(theta[i])):
                 for k in range(len(theta[i][j])):
                     if not k or not j:
-                        sum_cos += (lambda_para*theta[i][j][k]*theta[i][j][k])/(2*m)  # noqa
+                        sum_cos += (lambda_para * theta[i][j][k] * theta[i][j][k]) / (2 * m)  # noqa
     return sum_cos
 lambda_para = 0.0005
 J_cv_history = []
@@ -89,29 +89,29 @@ while True:
         break
     lambda_para *= 1.62
     print lambda_para
-    theta = [[]]*2
+    theta = [[]] * 2
     J_history = []
     for i in range(2):
-        theta[i] = [[]]*arch[i]
+        theta[i] = [[]] * arch[i]
         for j in range(len(theta[i])):
-            theta[i][j] = [[]]*arch2[i]
+            theta[i][j] = [[]] * arch2[i]
             for k in range(len(theta[i][j])):
-                theta[i][j][k] = (random.random()*epi*2) - epi
+                theta[i][j][k] = (random.random() * epi * 2) - epi
     for i in range(no_iter):
         J = cost_function(theta, training_set, lambda_para=lambda_para)
         J_history.append(J)
-        Delta = [[]]*2
+        Delta = [[]] * 2
         for ii in range(2):
-            Delta[ii] = [[]]*arch[ii]
+            Delta[ii] = [[]] * arch[ii]
             for j in range(len(Delta[ii])):
-                Delta[ii][j] = [[]]*arch2[ii]
+                Delta[ii][j] = [[]] * arch2[ii]
                 for k in range(len(Delta[ii][j])):
                     Delta[ii][j][k] = 0
         D = Delta[:]
         for case in training_set:
-            z = [[]]*3
-            a = [[]]*3
-            delta = [[]]*3
+            z = [[]] * 3
+            a = [[]] * 3
+            delta = [[]] * 3
             a[0] = [1] + case[:-1]
             z[1] = forward(a[0], theta[0])
             a[1] = [1] + [sigmoid(ii) for ii in z[1]][1:]
@@ -122,17 +122,17 @@ while True:
             for ii in range(2):
                 for j in range(len(Delta[ii])):
                     for k in range(len(Delta[ii][j])):
-                        Delta[ii][j][k] += delta[ii+1][j]*a[ii][k]
+                        Delta[ii][j][k] += delta[ii + 1][j] * a[ii][k]
         for ii in range(2):
             for j in range(len(Delta[ii])):
                 for k in range(len(Delta[ii][j])):
-                    D[ii][j][k] = (1.0/m)*Delta[ii][j][k]
+                    D[ii][j][k] = (1.0 / m) * Delta[ii][j][k]
                     if not j or not k:
-                        D[ii][j][k] += lambda_para*theta[ii][j][k]
+                        D[ii][j][k] += lambda_para * theta[ii][j][k]
         for ii in range(2):
             for j in range(len(Delta[ii])):
                 for k in range(len(Delta[ii][j])):
-                    theta[ii][j][k] -= alpha*D[ii][j][k]
+                    theta[ii][j][k] -= alpha * D[ii][j][k]
     J_cv_history.append(cost_function(theta, cv_set, False))
     lambda_history.append(lambda_para)
     theta_history.append(theta)
@@ -142,9 +142,9 @@ while True:
 d_theta = 0.00001
 theta[0][1][1] += d_theta
 dl1 = cost_function(theta, training_set)
-theta[0][1][1] -= 2*d_theta
+theta[0][1][1] -= 2 * d_theta
 dl2 = cost_function(theta, training_set)
-print D[0][1][1], (dl1 - dl2)/(2*d_theta)
+print D[0][1][1], (dl1 - dl2) / (2 * d_theta)
 theta = theta_history[-2]
 res_the = {0: [], 1: []}
 for case in training_set:

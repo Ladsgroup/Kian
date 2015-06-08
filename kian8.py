@@ -24,18 +24,18 @@ def forward(a, theta):
     for i in range(len(theta)):
         sum_i_2 = 0
         for j in range(len(a)):
-            sum_i_2 += a[j]*theta[i][j]
+            sum_i_2 += a[j] * theta[i][j]
         sum_i.append(sum_i_2)
     return sum_i
 
 
 def sigmoid(a):
-    return 1.0/(1 + math.exp(-1*a))
+    return 1.0 / (1 + math.exp(-1 * a))
 
 
 def kian(theta, case):
-    z = [[]]*3
-    a = [[]]*3
+    z = [[]] * 3
+    a = [[]] * 3
     a[0] = [1] + case
     z[1] = forward(a[0], theta[0])
     a[1] = [1] + [sigmoid(i) for i in z[1]][1:]

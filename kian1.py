@@ -28,7 +28,6 @@ def check(name, list_of_ctas):
                 cats[cat][1] += 1
             else:
                 print list_of_ctas
-    #print [name, f.read()[:200]]
     f.close()
 with codecs.open('%sen_kian.txt' % base_dir, 'r', 'utf-8') as najme:
     for line in najme:
@@ -39,14 +38,13 @@ with codecs.open('%sen_kian.txt' % base_dir, 'r', 'utf-8') as najme:
             continue
         if name and name != line.split("\t")[0]:
             check(name, a)
-            #name = line.split("\t")[0]
             a = []
         name = line.split("\t")[0]
         a.append(line.split("\t")[1])
 vals = []
 vals2 = []
 for cat in cats:
-    cats[cat][2] = cats[cat][1]*100.0/cats[cat][0]
+    cats[cat][2] = cats[cat][1] * 100.0 / cats[cat][0]
     vals.append(cats[cat][2])
     if int(cats[cat][2]) not in [100, 0]:
         vals2.append(cats[cat][2])
