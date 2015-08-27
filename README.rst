@@ -31,6 +31,7 @@ TODOs
 Dependency injection
 --------------------
 Kian is usable for any kind of training, you can simply inject the training set and get the result:
+
     .. code-block:: python
 >>> from kian import Kian
 >>> bot = Kian(training_set=the_training_set)
