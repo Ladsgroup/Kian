@@ -1,5 +1,3 @@
-import codecs
-import os
 import argparse
 
 if __name__ == '__main__' and __package__ is None:
@@ -38,7 +36,7 @@ else:
 
 if ' ' in name:
     name = name.replace(' ', '_')
-if not 'wiki' in wiki:
+if 'wiki' not in wiki:
     raise ValueError('Name of wiki is not valid.')
 if not property_name.startswith('P'):
     try:

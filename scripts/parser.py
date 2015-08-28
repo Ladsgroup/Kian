@@ -11,24 +11,24 @@ if __name__ == '__main__' and __package__ is None:
 import kian.fitness
 from kian import TrainedModel
 from kian import Kian
-sources={
-    'enwiki':  'Q328',
-    'svwiki':  'Q169514',
-    'dewiki':  'Q48183',
-    'itwiki':  'Q11920',
-    'nowiki':  'Q191769',
-    'fawiki':  'Q48952',
-    'eswiki':  'Q8449',
-    'plwiki':  'Q1551807',
-    'cawiki':  'Q199693',
-    'frwiki':  'Q8447',
-    'nlwiki':  'Q10000',
-    'ptwiki':  'Q11921',
-    'ruwiki':  'Q206855',
-    'viwiki':  'Q200180',
-    'bewiki':  'Q877583',
-    'ukwiki':  'Q199698',
-    'trwiki':  'Q58255',
+sources = {
+    'enwiki': 'Q328',
+    'svwiki': 'Q169514',
+    'dewiki': 'Q48183',
+    'itwiki': 'Q11920',
+    'nowiki': 'Q191769',
+    'fawiki': 'Q48952',
+    'eswiki': 'Q8449',
+    'plwiki': 'Q1551807',
+    'cawiki': 'Q199693',
+    'frwiki': 'Q8447',
+    'nlwiki': 'Q10000',
+    'ptwiki': 'Q11921',
+    'ruwiki': 'Q206855',
+    'viwiki': 'Q200180',
+    'bewiki': 'Q877583',
+    'ukwiki': 'Q199698',
+    'trwiki': 'Q58255',
     'cswiki': 'Q191168',
     'shwiki': 'Q58679',
     'jawiki': 'Q177837',
@@ -45,7 +45,7 @@ sources={
     'hrwiki': 'Q203488',
     'mswiki': 'Q845993',
     'glwiki': 'Q841208',
-    'euwiki': 'Q207260',}
+    'euwiki': 'Q207260'}
 
 
 def main():
@@ -88,8 +88,8 @@ def main():
             claim = pywikibot.Claim(repo, model.property_name)
             claim.setTarget(pywikibot.ItemPage(repo, model.value))
             item.addClaim(claim, summary='Bot: Adding %s:%s from %s '
-                '([[User:Ladsgroup/Kian|Powered by Kian]])' %
-                (model.property_name, model.value, model.wiki))
+                          '([[User:Ladsgroup/Kian|Powered by Kian]])' %
+                          (model.property_name, model.value, model.wiki))
             source = pywikibot.Claim(repo, 'P143')
             source.setTarget(pywikibot.ItemPage(repo, sources[model.wiki]))
             claim.addSource(source)
