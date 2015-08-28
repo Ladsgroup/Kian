@@ -24,7 +24,7 @@ if args.name:
 else:
     name = str(raw_input('Please provide a name. No space character:')).strip()
 if args.wiki:
-    name = args.wiki
+    wiki = args.wiki
 else:
     wiki = str(raw_input('Code of Wiki, e.g. enwiki, fawikivoyage:')).strip()
 if args.prop:
