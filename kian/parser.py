@@ -31,7 +31,16 @@ class ModelWithData(Model):
             url.format(statemnt=self.property_name[1:],
                        value=self.value[1:],
                        wiki=self.wiki)).read().decode('utf-8')
-        return set(res.split('\n'))
+        res_set = set(res.split('\n'))
+        if hasattr(self, 'bias_unit'):
+            url = "http://tools.wmflabs.org/autolist/index.php?wdq={bias}" \
+               "_and_noclaim[{statemnt}:{value}]_and_link[{wiki}]" \
+               "&run=Run&download=1"
+            res = urllib2.urlopen(
+                url.format(statemnt=self.property_name[1:],
+                           value=self.value[1:], bias=self.bias_unit,
+                           wiki=self.wiki)).read().decode('utf-8')
+        return set(res.split('\n')) | res_set
 
     def sql_query(self, cnf_file='~/replica.my.cnf', host='labsdb'):
         query = "SELECT pp_value, cl_to FROM page_props JOIN categorylinks " \
@@ -66,9 +75,12 @@ class ModelWithData(Model):
             with codecs.open(wiki_path, 'r', 'utf-8') as f:
                 for line in f:
                     line = line.replace('\n', '').split('\t')
+                    if len(line) != 2:
+                        continue
                     self.categories[line[0]] = [int(line[1]), 0, 0]
 
-    def load_data(self, reload_wiki=False, reload_wikidata=False, load_cats=True):
+    def load_data(self, reload_wiki=False, reload_wikidata=False,
+                  load_cats=True):
         if not os.path.isdir(self.data_directory):
             os.makedirs(self.data_directory)
         wiki_data_dir = os.path.join(self.data_directory, os.pardir,
@@ -101,19 +113,23 @@ class ModelWithData(Model):
                 with codecs.open(wiki_path, 'w', 'utf-8') as f:
                     res = u''
                     for case in self.sql_query():
-                        res += u'\t'.join([i.decode('utf-8') for i in case]) + '\n'
+                        res += u'\t'.join([i.decode('utf-8') for i in case]) \
+                            + '\n'
                     f.write(res)
             wiki_path = os.path.join(wiki_data_dir, self.wiki + '2.dat')
             if not os.path.isfile(wiki_path):
                 with codecs.open(wiki_path, 'w', 'utf-8') as f:
                     res = u''
                     for case in self.sql_query2():
-                        res += u'\t'.join([str(i).decode('utf-8') for i in case]) + '\n'
+                        sql_row_res = [str(i).decode('utf-8') for i in case]
+                        res += u'\t'.join(sql_row_res) + '\n'
                     f.write(res)
             self.categories = {}
             with codecs.open(wiki_path, 'r', 'utf-8') as f:
                 for line in f:
                     line = line.replace('\n', '').split('\t')
+                    if len(line) != 2:
+                        continue
                     self.categories[line[0]] = [int(line[1]), 0, 0]
 
         if reload_wikidata or not hasattr(self, 'wikidata_data_w'):
@@ -169,6 +185,8 @@ class ModelWithData(Model):
 
     def build_training_set(self, name, list_of_cats):
         y = None
+        if len(self.training_set) > 30000:
+            return
         if name in self.wikidata_data_w:
             y = [1]
         elif name in self.wikidata_data_wo:

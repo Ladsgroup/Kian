@@ -3,6 +3,7 @@ import os
 import codecs
 from kian.parser import ModelWithData
 
+
 class TrainedModel(ModelWithData):
     """docstring for TrainedModel"""
     def __init__(self, *args, **kwargs):

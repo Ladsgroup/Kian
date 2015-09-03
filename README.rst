@@ -21,12 +21,6 @@ Bottlenecks of speed in Kian are:
 
 2) Training the model. Since it's an ANN and ANNs are resource consuming to train, this may take a while but depends on Wiki you are working with.
 
-TODOs
------
-1) Add possible mistakes finder
-
-2) Add system to work with claimless items and add statements
-
 
 Dependency injection
 --------------------

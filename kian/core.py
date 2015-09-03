@@ -6,7 +6,8 @@ import os
 
 class Kian(object):
     """Train the model"""
-    def __init__(self, model=None, lambda_para=0.0005, no_iter=250, alpha=0.1, epi=0.2, training_set=None):
+    def __init__(self, model=None, lambda_para=0.0005, no_iter=250,
+                 alpha=0.1, epi=0.2, training_set=None, slow=False):
         if not model and not training_set:
             raise ValueError('You must define a model or training set')
         self.model = model
@@ -19,8 +20,10 @@ class Kian(object):
         self.theta_history = []
         self.J_history = []
         self.delta = []
+        self.slow = slow
         if not training_set:
-            tr_path = os.path.join(self.model.data_directory, 'training_set.dat')
+            tr_path = os.path.join(self.model.data_directory,
+                                   'training_set.dat')
             with codecs.open(tr_path, 'r', 'utf-8') as f:
                 training_set_temp = eval(f.read())
         else:
@@ -34,9 +37,12 @@ class Kian(object):
             y_k = len(self.training_set[0][-1])
         self.arch = [len(self.training_set[0]), y_k]
         self.arch2 = [len(self.training_set[0]), len(self.training_set[0])]
-        self.cv_set = random.sample(self.training_set, len(self.training_set)/5)
+        self.cv_set = random.sample(
+            self.training_set, len(self.training_set) / 5)
         training_set2 = [x for x in self.training_set if x not in self.cv_set]
         self.training_set = training_set2[:]
+        if len(self.training_set) > 30000 and not slow:
+            self.training_set = random.sample(self.training_set, 30000)
         self.size = len(self.training_set)
 
     @staticmethod
@@ -98,7 +104,8 @@ class Kian(object):
         print "Working on a training set size of %d" % self.size
 
         while True:
-            if len(self.J_cv_history) > 1 and self.J_cv_history[-1] > self.J_cv_history[-2]:
+            if len(self.J_cv_history) > 1 and self.J_cv_history[-1] > \
+                    self.J_cv_history[-2]:
                 break
             self.lambda_para *= 1.62
             print self.lambda_para
@@ -109,9 +116,11 @@ class Kian(object):
                 for j in range(len(theta[i])):
                     theta[i][j] = [[]]*self.arch2[i]
                     for k in range(len(theta[i][j])):
-                        theta[i][j][k] = (random.random()*self.epi*2) - self.epi
+                        theta[i][j][k] = (random.random() * self.epi * 2) \
+                            - self.epi
             for i in range(self.no_iter):
-                J = self.cost_function(theta, self.training_set, lambda_para=self.lambda_para)
+                J = self.cost_function(theta, self.training_set,
+                                       lambda_para=self.lambda_para)
                 self.J_history.append(J)
                 Delta = [[]]*2
                 for ii in range(2):
@@ -130,7 +139,8 @@ class Kian(object):
                     a[1] = [1] + [self.sigmoid(ii) for ii in z[1]][1:]
                     z[2] = self.forward(a[1], theta[1])
                     a[2] = [self.sigmoid(ii) for ii in z[2]]
-                    delta[2] = [a[2][ii] - case[-1][ii] for ii in range(len(case[-1]))]
+                    delta[2] = [a[2][ii] - case[-1][ii] for ii
+                                in range(len(case[-1]))]
                     delta[1] = self.backward(delta[2], theta[1], a[1])
                     for ii in range(2):
                         for j in range(len(Delta[ii])):
@@ -146,7 +156,8 @@ class Kian(object):
                     for j in range(len(Delta[ii])):
                         for k in range(len(Delta[ii][j])):
                             theta[ii][j][k] -= self.alpha*D[ii][j][k]
-            self.J_cv_history.append(self.cost_function(theta, self.cv_set, False))
+            self.J_cv_history.append(
+                self.cost_function(theta, self.cv_set, False))
             self.lambda_history.append(self.lambda_para)
             self.theta_history.append(theta)
         self.theta = theta

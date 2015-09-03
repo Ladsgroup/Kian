@@ -1,4 +1,3 @@
-import math
 
 
 def _ratio(test_set, thrashhold):

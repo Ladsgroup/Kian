@@ -5,7 +5,7 @@ import os
 
 class Model(object):
     """docstring for Model"""
-    def __init__(self, name, wiki, property_name, value):
+    def __init__(self, name, wiki, property_name, value, bias_unit=None):
         self.name = name
         self.wiki = wiki
         self.property_name = property_name
@@ -14,6 +14,8 @@ class Model(object):
         self.data_directory = os.path.abspath(
             os.path.join(path, os.pardir, 'data',
                          '%s' % self.name))
+        if bias_unit:
+            self.bias_unit = bias_unit
 
     @classmethod
     def from_file(cls, name):
