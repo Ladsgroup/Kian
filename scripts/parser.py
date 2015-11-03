@@ -32,18 +32,20 @@ def main():
     first_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 1)[0]
     second_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 0.5)[0]
     second_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 0.25)[0]
-    pywikibot.output('1st, 2nd, and 3rd thrashholds are: %s, %s, %s'
-                    % (first_thrashhold, second_thrashhold, second_thrashhold))
+    pywikibot.output('1st, 2nd, and 3rd thrashholds are: %s, %s, %s' %
+                     (first_thrashhold, second_thrashhold, second_thrashhold))
     local_args = pywikibot.handle_args(args)
     genFactory = pagegenerators.GeneratorFactory()
     for arg in local_args:
         genFactory.handleArg(arg)
     generator = genFactory.getCombinedGenerator()
-    repo = pywikibot.Site().data_repository()
     for page in generator:
-        cats = [cat.title(underscore=True, withNamespace=False) for cat in page.categories()]
+        cats = [cat.title(underscore=True, withNamespace=False)
+                for cat in page.categories()]
         features = model.label_case(cats)
         res = Kian.kian(model.theta, features)[0]
         pywikibot.output(page.title(), res)
+
+
 if __name__ == "__main__":
     main()

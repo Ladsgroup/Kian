@@ -13,9 +13,6 @@ from kian import Kian
 
 site = pywikibot.Site('wikidata', fam='wikidata')
 
-def _check(name, cats):
-    features = model.label_case(cats)
-    res = Kian.kian(model.theta, features)[0]
 
 def main():
     args = sys.argv[1:]
@@ -65,4 +62,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         sys.exit()
-

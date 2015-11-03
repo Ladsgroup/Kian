@@ -1,7 +1,5 @@
-import codecs
-import os
 import argparse
-#TODO: Use time
+# TODO: Use time
 
 if __name__ == '__main__' and __package__ is None:
     from os import sys, path
@@ -23,8 +21,10 @@ args = parser.parse_args()
 
 model = ModelWithData.from_file(args.name)
 print('Loading data')
-model.load_data(reload_wiki=args.reload_wikipedia, reload_wikidata=args.reload_wikidata)
-model.retrieve_data(reload_wiki=args.reload_wikipedia, reload_wikidata=args.reload_wikidata)
+model.load_data(reload_wiki=args.reload_wikipedia,
+                reload_wikidata=args.reload_wikidata)
+model.retrieve_data(reload_wiki=args.reload_wikipedia,
+                    reload_wikidata=args.reload_wikidata)
 print('Building the training set')
 model.label_categories()
 print('Training the model')

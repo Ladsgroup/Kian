@@ -9,8 +9,8 @@ def _ratio(test_set, thrashhold):
     for case in test_set[1]:
         if case > thrashhold:
             true_positives += 1
-    return (false_positives/float(len(test_set[0])),
-            true_positives/float(len(test_set[1])))
+    return (false_positives / float(len(test_set[0])),
+            true_positives / float(len(test_set[1])))
 
 
 def AUC(test_set, step=0.01):
@@ -37,7 +37,7 @@ def precision(a, b):
             true_positives += 1
     if positives == 0:
         return
-    return float(true_positives)/float(positives)
+    return float(true_positives) / float(positives)
 
 
 def recall(a, b):
@@ -49,7 +49,7 @@ def recall(a, b):
         positives += 1
     if positives == 0:
         return
-    return float(true_positives)/float(positives)
+    return float(true_positives) / float(positives)
 
 
 def optimum_thrashhold(test_set, beta=0.5):
@@ -65,7 +65,7 @@ def optimum_thrashhold(test_set, beta=0.5):
             continue
         res[thrashhold] = (pre, rec)
         x.append(thrashhold)
-        y.append((2 + (beta**2))*(pre*rec)/((pre*beta*beta) + rec))
+        y.append((2 + (beta**2)) * (pre * rec) / ((pre * beta * beta) + rec))
         thrashhold += 0.001
     the_thrashhold = max(y)
     index = y.index(the_thrashhold)

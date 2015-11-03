@@ -20,7 +20,8 @@ args = parser.parse_args()
 if args.name:
     name = args.name
 else:
-    name = str(raw_input('Please provide a name. No space character:')).strip()
+    name = str(
+        raw_input('Please provide a name. No space character:')).strip()
 if args.wiki:
     wiki = args.wiki
 else:
@@ -28,7 +29,8 @@ else:
 if args.prop:
     property_name = args.prop
 else:
-    property_name = str(raw_input('Number or id of property, e.g. P31, P17:')).strip()
+    property_name = str(
+        raw_input('Number or id of property, e.g. P31, P17:')).strip()
 if args.value:
     value = args.value
 else:
@@ -63,7 +65,8 @@ except:
 
 # TODO: Further settings.
 
-model = model.Model(name=name, wiki=wiki, property_name=property_name, value=value)
+model = model.Model(name=name, wiki=wiki, property_name=property_name,
+                    value=value)
 try:
     model.write_file()
 except RuntimeError:

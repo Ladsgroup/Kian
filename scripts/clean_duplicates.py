@@ -4,7 +4,7 @@ import urllib2
 
 
 url = "http://tools.wmflabs.org/autolist/index.php?wdq=claim[" \
-            "{statemnt}:{value}]&run=Run&download=1"
+    "{statemnt}:{value}]&run=Run&download=1"
 res_human = urllib2.urlopen(
     url.format(statemnt='31',
                value='5')).read().decode('utf-8')

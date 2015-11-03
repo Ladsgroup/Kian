@@ -64,7 +64,6 @@ def main():
         raise ValueError('You should train the model first')
     with codecs.open(file_path, 'r', 'utf-8') as f:
         cv_set = eval(f.read())
-    first_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 1)[0]
     second_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 0.25)[0]
 
     local_args = pywikibot.handle_args(args)
@@ -74,7 +73,8 @@ def main():
     generator = genFactory.getCombinedGenerator()
     repo = pywikibot.Site().data_repository()
     for page in generator:
-        cats = [cat.title(underscore=True, withNamespace=False) for cat in page.categories()]
+        cats = [cat.title(underscore=True, withNamespace=False)
+                for cat in page.categories()]
         features = model.label_case(cats)
         res = Kian.kian(model.theta, features)[0]
         if res > second_thrashhold:

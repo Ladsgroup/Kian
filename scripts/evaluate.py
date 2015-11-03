@@ -28,6 +28,10 @@ second_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 0.5)
 third_thrashhold = kian.fitness.optimum_thrashhold(cv_set, 0.25)
 
 print('AUC of the classifier: {0:.4}'.format(AUC))
-print('First thrashhold (recall and precision): %s (%s, %s)' % (first_thrashhold[0], first_thrashhold[1][0], first_thrashhold[1][1]))
-print('Second thrashhold (recall and precision): %s (%s, %s)' % (second_thrashhold[0], second_thrashhold[1][0], second_thrashhold[1][1]))
-print('Third thrashhold (recall and precision): %s (%s, %s)' % (third_thrashhold[0], third_thrashhold[1][0], third_thrashhold[1][1]))
+print('First thrashhold (recall and precision): %s (%s, %s)' %
+      (first_thrashhold[0], first_thrashhold[1][0], first_thrashhold[1][1]))
+print('Second thrashhold (recall and precision): %s (%s, %s)' %
+      (second_thrashhold[0], second_thrashhold[1][0],
+       second_thrashhold[1][1]))
+print('Third thrashhold (recall and precision): %s (%s, %s)' %
+      (third_thrashhold[0], third_thrashhold[1][0], third_thrashhold[1][1]))

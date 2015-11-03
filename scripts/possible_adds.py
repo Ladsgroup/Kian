@@ -49,9 +49,7 @@ sources = {
     'glwiki': 'Q841208',
     'euwiki': 'Q207260'}
 repo = site.data_repository()
-def _check(name, cats):
-    features = model.label_case(cats)
-    res = Kian.kian(model.theta, features)[0]
+
 
 def main():
     args = sys.argv[1:]
@@ -90,28 +88,34 @@ def main():
                     continue
                 features = model.label_case(a)
                 res = Kian.kian(model.theta, features)[0]
-                if res > second_thrashhold:
-                    print('Found something on %s, %s' % (name, res))
-                    item = pywikibot.ItemPage(repo, name)
-                    try:
-                        item.get()
-                    except:
-                        a = []
-                        name = line.split('\t')[0]
-                        continue
-                    if not model.property_name in item.claims:
-                        print('Adding statements')
-                        claim = pywikibot.Claim(repo, model.property_name)
-                        claim.setTarget(pywikibot.ItemPage(repo, model.value))
-                        try:
-                            item.addClaim(claim, summary='Bot: Adding %s:%s from %s '
-                                          '([[User:Ladsgroup/Kian|Powered by Kian]])' %
-                                          (model.property_name, model.value, model.wiki))
-                            source = pywikibot.Claim(repo, 'P143')
-                            source.setTarget(pywikibot.ItemPage(repo, sources[model.wiki]))
-                            claim.addSource(source)
-                        except pywikibot.data.api.APIError:
-                            continue
+                if res < second_thrashhold:
+                    a = []
+                    continue
+                print('Found something on %s, %s' % (name, res))
+                item = pywikibot.ItemPage(repo, name)
+                try:
+                    item.get()
+                except:
+                    a = []
+                    name = line.split('\t')[0]
+                    continue
+                if model.property_name in item.claims:
+                    a = []
+                    continue
+                print('Adding statements')
+                claim = pywikibot.Claim(repo, model.property_name)
+                claim.setTarget(pywikibot.ItemPage(repo, model.value))
+                summary = ('Bot: Adding %s:%s from %s ([[User:Ladsgroup'
+                           '/Kian|Powered by Kian]])' %
+                           (model.property_name, model.value, model.wiki))
+                try:
+                    item.addClaim(claim, summary=summary)
+                    source = pywikibot.Claim(repo, 'P143')
+                    source.setTarget(
+                        pywikibot.ItemPage(repo, sources[model.wiki]))
+                    claim.addSource(source)
+                except pywikibot.data.api.APIError:
+                    continue
                 a = []
             name = line.split('\t')[0]
             a.append(line.split('\t')[1])
@@ -120,4 +124,3 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         sys.exit()
-

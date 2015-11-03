@@ -34,8 +34,8 @@ class ModelWithData(Model):
         res_set = set(res.split('\n'))
         if hasattr(self, 'bias_unit'):
             url = "http://tools.wmflabs.org/autolist/index.php?wdq={bias}" \
-               "_and_noclaim[{statemnt}:{value}]_and_link[{wiki}]" \
-               "&run=Run&download=1"
+                  "_and_noclaim[{statemnt}:{value}]_and_link[{wiki}]" \
+                  "&run=Run&download=1"
             res = urllib2.urlopen(
                 url.format(statemnt=self.property_name[1:],
                            value=self.value[1:], bias=self.bias_unit,
