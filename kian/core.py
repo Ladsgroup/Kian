@@ -7,7 +7,8 @@ import os
 class Kian(object):
     """Train the model"""
     def __init__(self, model=None, lambda_para=0.0005, no_iter=250,
-                 alpha=0.1, epi=0.2, training_set=None, slow=False):
+                 alpha=0.1, epi=0.2, training_set=None, slow=False,
+                 skewed=False):
         if not model and not training_set:
             raise ValueError('You must define a model or training set')
         self.model = model
@@ -29,6 +30,8 @@ class Kian(object):
         else:
             training_set_temp = training_set
         self.training_set = []
+        if skewed:
+            training_set = self.balance_training_set(training_set)
         for case in training_set_temp:
             self.training_set.append(list(case))
         if isinstance(self.training_set[0][-1], int):
@@ -44,6 +47,23 @@ class Kian(object):
         if len(self.training_set) > 30000 and not slow:
             self.training_set = random.sample(self.training_set, 30000)
         self.size = len(self.training_set)
+
+    @staticmethod
+    def balance_training_set(tr_set):
+        no_outputs = {}
+        tr_set2 = {}
+        for case in tr_set:
+            no_outputs[case[-1]] = no_outputs.get(case[-1], 0) + 1
+            tr_set2[case[-1]] = tr_set2.get(case[-1], []) + [case]
+        lowest_no = min(no_outputs.values())
+        training_set = []
+        for out in tr_set2:
+            if no_outputs[out] > lowest_no:
+                training_set += random.sample(tr_set2[out], lowest_no)
+            else:
+                training_set += tr_set2[out]
+
+        return random.sample(training_set, len(training_set))
 
     @staticmethod
     def forward(a, theta):
@@ -102,14 +122,14 @@ class Kian(object):
         return sum_cos
 
     def train(self):
-        print "Working on a training set size of %d" % self.size
+        print("Working on a training set size of %d" % self.size)
 
         while True:
             if len(self.J_cv_history) > 1 and self.J_cv_history[-1] > \
                     self.J_cv_history[-2]:
                 break
             self.lambda_para *= 1.62
-            print self.lambda_para
+            print(self.lambda_para)
             theta = [[]] * 2
             self.J_history = []
             for i in range(2):
@@ -173,16 +193,16 @@ class Kian(object):
         dl1 = self.cost_function(theta_1, self.training_set)
         theta_2[0][1][1] -= 2 * d_theta
         dl2 = self.cost_function(theta_2, self.training_set)
-        print "difference between results..."
-        print self.D[0][1][1], (dl1 - dl2) / (2 * d_theta)
+        print("difference between results...")
+        print(self.D[0][1][1], (dl1 - dl2) / (2 * d_theta))
         res_the = {0: [], 1: []}
         for case in self.training_set:
             res_the[case[-1][0]].append(self.kian(self.theta, case[:-1])[0])
         res_the2 = {0: [], 1: []}
         for case in self.cv_set:
             res_the2[case[-1][0]].append(self.kian(self.theta, case[:-1])[0])
-        print "Cost function convergence"
-        print self.J_history[:10], self.J_history[-10:]
+        print("Cost function convergence")
+        print(self.J_history[:10], self.J_history[-10:])
         d_path = self.model.data_directory
         with codecs.open(os.path.join(d_path, 'res1.dat'), 'w', 'utf-8') as f:
             f.write(str(res_the))

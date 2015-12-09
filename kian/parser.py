@@ -1,9 +1,14 @@
 from .model import Model
+
 try:
-    import urllib2
-except ImportError:
+    basestring
+except NameError:
     import urllib.request as urllib2
-import MySQLdb
+    import pymysql as MySQLdb
+else:
+    import urllib2
+    import MySQLdb
+
 import codecs
 import os
 import json
