@@ -31,7 +31,7 @@ class Kian(object):
             training_set_temp = training_set
         self.training_set = []
         if skewed:
-            training_set = self.balance_training_set(training_set)
+            training_set_temp = self.balance_training_set(training_set_temp)
         for case in training_set_temp:
             self.training_set.append(list(case))
         if isinstance(self.training_set[0][-1], int):
