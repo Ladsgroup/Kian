@@ -185,7 +185,7 @@ class Kian(object):
         self.theta = theta
         self.D = D
 
-    def finalize(self):
+    def finalize(self, d_path=None):
         d_theta = 0.00001
         theta_1 = self.theta[:]
         theta_2 = self.theta[:]
@@ -203,7 +203,8 @@ class Kian(object):
             res_the2[case[-1][0]].append(self.kian(self.theta, case[:-1])[0])
         print("Cost function convergence")
         print(self.J_history[:10], self.J_history[-10:])
-        d_path = self.model.data_directory
+        if not d_path:
+            d_path = self.model.data_directory
         with codecs.open(os.path.join(d_path, 'res1.dat'), 'w', 'utf-8') as f:
             f.write(str(res_the))
         with codecs.open(os.path.join(d_path, 'res2.dat'), 'w', 'utf-8') as f:

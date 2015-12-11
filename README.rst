@@ -31,6 +31,7 @@ Kian is usable for any kind of training, you can simply inject the training set 
 >>> bot = Kian(training_set=the_training_set)
 >>> bot.train()
 >>> bot.theta
+>>> bot.finalize(path='path_to_save_results')
 
 
 Authors
