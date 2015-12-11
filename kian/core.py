@@ -41,7 +41,7 @@ class Kian(object):
         self.arch = [len(self.training_set[0]), y_k]
         self.arch2 = [len(self.training_set[0]), len(self.training_set[0])]
         self.cv_set = random.sample(
-            self.training_set, len(self.training_set) / 5)
+            self.training_set, int(len(self.training_set) / 5))
         training_set2 = [x for x in self.training_set if x not in self.cv_set]
         self.training_set = training_set2[:]
         if len(self.training_set) > 30000 and not slow:
