@@ -8,7 +8,7 @@ class Kian(object):
     """Train the model"""
     def __init__(self, model=None, lambda_para=0.0005, no_iter=250,
                  alpha=0.1, epi=0.2, training_set=None, slow=False,
-                 skewed=False):
+                 skewed=False, balance_with_replacement=False):
         if not model and not training_set:
             raise ValueError('You must define a model or training set')
         self.model = model
@@ -31,7 +31,12 @@ class Kian(object):
             training_set_temp = training_set
         self.training_set = []
         if skewed:
-            training_set_temp = self.balance_training_set(training_set_temp)
+            if balance_with_replacement:
+                training_set_temp = self.balance_training_set_replacement(
+                    training_set_temp)
+            else:
+                training_set_temp = self.balance_training_set(
+                    training_set_temp)
         for case in training_set_temp:
             self.training_set.append(list(case))
         if isinstance(self.training_set[0][-1], int):
@@ -60,6 +65,24 @@ class Kian(object):
         for out in tr_set2:
             if no_outputs[out] > lowest_no:
                 training_set += random.sample(tr_set2[out], lowest_no)
+            else:
+                training_set += tr_set2[out]
+
+        return random.sample(training_set, len(training_set))
+
+    @staticmethod
+    def balance_training_set_replacement(tr_set):
+        no_outputs = {}
+        tr_set2 = {}
+        for case in tr_set:
+            no_outputs[case[-1]] = no_outputs.get(case[-1], 0) + 1
+            tr_set2[case[-1]] = tr_set2.get(case[-1], []) + [case]
+        highest_no = max(no_outputs.values())
+        training_set = []
+        for out in tr_set2:
+            if no_outputs[out] < highest_no:
+                training_set += [random.sample(tr_set2[out], 1)[0]
+                                 for i in range(highest_no)]
             else:
                 training_set += tr_set2[out]
 
