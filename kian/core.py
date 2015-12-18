@@ -45,10 +45,10 @@ class Kian(object):
             y_k = len(self.training_set[0][-1])
         self.arch = [len(self.training_set[0]), y_k]
         self.arch2 = [len(self.training_set[0]), len(self.training_set[0])]
-        self.cv_set = random.sample(
-            self.training_set, int(len(self.training_set) / 5))
-        training_set2 = [x for x in self.training_set if x not in self.cv_set]
-        self.training_set = training_set2[:]
+        random.shuffle(self.training_set)
+        split_number = int(len(self.training_set) / 5)
+        self.cv_set = self.training_set[:split_number]
+        self.training_set = self.training_set[split_number:]
         if len(self.training_set) > 30000 and not slow:
             self.training_set = random.sample(self.training_set, 30000)
         self.size = len(self.training_set)
@@ -68,7 +68,7 @@ class Kian(object):
             else:
                 training_set += tr_set2[out]
 
-        return random.sample(training_set, len(training_set))
+        return training_set
 
     @staticmethod
     def balance_training_set_replacement(tr_set):
