@@ -95,9 +95,9 @@ class Kian(object):
 
     @staticmethod
     def value_normalizer(value):
-        if value is True:
+        if value is True or value == "True":
             return 1
-        if value is False:
+        if value is False or value == "False":
             return 0
         if isinstance(value, int) or isinstance(value, float):
             return value
