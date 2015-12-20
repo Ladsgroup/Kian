@@ -3,6 +3,11 @@ import random
 import codecs
 import os
 
+try:
+    basestring
+except:
+    basestring = str
+
 
 class Kian(object):
     """Train the model"""
@@ -96,6 +101,8 @@ class Kian(object):
             return 0
         if isinstance(value, int) or isinstance(value, float):
             return value
+        if isinstance(value, str):
+            return float(value)
         res = []
         for case in value:
             res.append(Kian.value_normalizer(case))
