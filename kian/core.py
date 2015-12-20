@@ -38,7 +38,7 @@ class Kian(object):
                 training_set_temp = self.balance_training_set(
                     training_set_temp)
         for case in training_set_temp:
-            self.training_set.append(list(case))
+            self.training_set.append([self.value_normalizer(i) for i in case])
         if isinstance(self.training_set[0][-1], int):
             y_k = 1
         else:
@@ -87,6 +87,19 @@ class Kian(object):
                 training_set += tr_set2[out]
 
         return random.sample(training_set, len(training_set))
+
+    @staticmethod
+    def value_normalizer(value):
+        if value is True:
+            return 1
+        if value is False:
+            return 0
+        if isinstance(value, int) or isinstance(value, float):
+            return value
+        res = []
+        for case in value:
+            res.append(Kian.value_normalizer(case))
+        return res
 
     @staticmethod
     def forward(a, theta):
