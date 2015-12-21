@@ -43,6 +43,8 @@ class Kian(object):
                 training_set_temp = self.balance_training_set(
                     training_set_temp)
         for case in training_set_temp:
+            if len(case) == 2 and hasattr(case[0], '__iter__'):
+                    case = case[0] + [case[1]]
             self.training_set.append([self.value_normalizer(i) for i in case])
         if isinstance(self.training_set[0][-1], int):
             y_k = 1
