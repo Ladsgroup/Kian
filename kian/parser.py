@@ -26,6 +26,7 @@ class ModelWithData(Model):
             url.format(statemnt=self.property_name[1:],
                        value=self.value[1:],
                        wiki=self.wiki)).read().decode('utf-8')
+        res = res.split(',', '')
         return set(res.split('\n'))
 
     def retrieve_statements_wo(self):
@@ -36,6 +37,7 @@ class ModelWithData(Model):
             url.format(statemnt=self.property_name[1:],
                        value=self.value[1:],
                        wiki=self.wiki)).read().decode('utf-8')
+        res = res.split(',', '')
         res_set = set(res.split('\n'))
         if hasattr(self, 'bias_unit'):
             url = "http://tools.wmflabs.org/autolist/index.php?wdq={bias}" \
@@ -45,6 +47,7 @@ class ModelWithData(Model):
                 url.format(statemnt=self.property_name[1:],
                            value=self.value[1:], bias=self.bias_unit,
                            wiki=self.wiki)).read().decode('utf-8')
+        res = res.split(',', '')
         return set(res.split('\n')) | res_set
 
     def sql_query(self, cnf_file='~/replica.my.cnf', host='labsdb'):

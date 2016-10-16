@@ -30,6 +30,7 @@ def main():
                            value=case[1][1:])).read().decode('utf-8')
         else:
             res = res_human
+        res = res.replace(',', '')
         res = set(res.split('\n'))
         select_statement = (
             "SELECT qid from kian "
