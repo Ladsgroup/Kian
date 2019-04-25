@@ -3,16 +3,24 @@ import MySQLdb
 import urllib2
 
 
-url = "http://tools.wmflabs.org/autolist/index.php?wdq=claim[" \
-    "{statemnt}:{value}]&run=Run&download=1"
-res_human = urllib2.urlopen(
-    url.format(statemnt='31',
-               value='5')).read().decode('utf-8')
+from SPARQLWrapper import SPARQLWrapper, JSON
 
+endpoint_url = "https://query.wikidata.org/sparql"
+
+query = "SELECT ?item WHERE {{?item wdt:{0} wd:{1}}}"
+
+def get_results(endpoint_url, query_):
+    sparql = SPARQLWrapper(endpoint_url)
+    sparql.setQuery(query_)
+    sparql.setReturnFormat(JSON)
+    return sparql.query().convert()["results"]["bindings"]
+
+#res_human = [i["results"]["bindings"][0] for i in get_results(endpoint_url, query.format('P31', 'Q5'))]
+#print(res_human[:500])
 
 def main():
     db = MySQLdb.connect(host="tools-db", db="s52709__kian_p",
-                         read_default_file="~/replica.my.cnf")
+                         read_default_file="/data/project/kian/replica.my.cnf")
     cursor = db.cursor()
     select_statement = (
         "SELECT property, value from kian "
@@ -25,13 +33,11 @@ def main():
         url = "http://tools.wmflabs.org/autolist/index.php?wdq=claim[" \
             "{statemnt}:{value}]&run=Run&download=1"
         if case[1] != 'Q5':
-            res = urllib2.urlopen(
-                url.format(statemnt=case[0][1:],
-                           value=case[1][1:])).read().decode('utf-8')
+            res = [i['item']['value'].replace('http://www.wikidata.org/entity/', '') for i in get_results(endpoint_url, query.format(case[0], case[1]))]
         else:
-            res = res_human
-        res = res.replace(',', '')
-        res = set(res.split('\n'))
+            continue
+            #res = res_human
+        res = set(res)
         select_statement = (
             "SELECT qid from kian "
             "where status = 0 and property = "
@@ -39,6 +45,9 @@ def main():
         cursor.execute(select_statement)
         res2 = set([i[0] for i in cursor.fetchall()])
         intersection = res & res2
+        print(len(intersection))
+        if not intersection:
+            continue
         print(len(res), len(res2), len(intersection))
         str_intersection = str(tuple(intersection)).replace('u\'Q', '\'Q')
         set_statement = (
@@ -57,3 +66,4 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         sys.exit()
+
